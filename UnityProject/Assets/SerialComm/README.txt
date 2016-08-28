@@ -1,7 +1,3 @@
-# SerialCommUnity
-Assets for integrating Arduino and Unity (or Unity and any hardware that communicates over a COM port)
-
-
 
 Instructions
 ============
@@ -20,7 +16,7 @@ Possible Problem When Importing This Package
 
 If you get this error message:
 
-> Assets/SerialComm/Scripts/SerialThread.cs(9,17): error CS0234: The type or namespace name 'Ports' does not exist in the namespace 'System.IO'. Are you missing an assembly reference?
+Assets/SerialComm/Scripts/SerialThread.cs(9,17): error CS0234: The type or namespace name `Ports' does not exist in the namespace `System.IO'. Are you missing an assembly reference?
 
 It's because the current "API Compatibility Level" of your Unity project is set to ".NET 2.0 Subset", which doesn't contain the classes necessary for serial communication. Do this to solve the problem:
 
@@ -46,7 +42,7 @@ Sample Arduino Program
             Serial.println("Arduino is alive!!");
             last_time = millis();
         }
-
+        
         // Send some message when I receive an 'A' or a 'Z'.
         switch (Serial.read())
         {
@@ -58,3 +54,4 @@ Sample Arduino Program
                 break;
         }
     }
+    
