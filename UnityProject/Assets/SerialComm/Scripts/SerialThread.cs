@@ -1,5 +1,9 @@
-﻿/**
- * Author: Daniel Wilches
+/**
+ * SerialCommUnity (Serial Communication for Unity)
+ * Author: Daniel Wilches <dwilches@gmail.com>
+ *
+ * This work is released under the Creative Commons Attributions license.
+ * https://creativecommons.org/licenses/by/2.0/
  */
 
 using UnityEngine;
@@ -57,7 +61,7 @@ public class SerialThread
     // its method 'RunForever' can later be used to create a real Thread.
     // ------------------------------------------------------------------------
     public SerialThread(string portName,
-                        int baudRate, 
+                        int baudRate,
                         int delayBeforeReconnecting,
                         int maxUnreadMessages)
     {
@@ -79,7 +83,7 @@ public class SerialThread
     {
         if (inputQueue.Count == 0)
             return null;
-        
+
         return (string)inputQueue.Dequeue();
     }
 

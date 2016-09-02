@@ -1,5 +1,9 @@
 ﻿/**
- * Author: Daniel Wilches
+ * SerialCommUnity (Serial Communication for Unity)
+ * Author: Daniel Wilches <dwilches@gmail.com>
+ *
+ * This work is released under the Creative Commons Attributions license.
+ * https://creativecommons.org/licenses/by/2.0/
  */
 
 using UnityEngine;
@@ -9,12 +13,12 @@ using System.Threading;
 /**
  * This class allows a Unity program to continually check for messages from a
  * serial device.
- * 
+ *
  * It creates a Thread that communicates with the serial port and continually
  * polls the messages on the wire.
  * That Thread puts all the messages inside a Queue, and this SerialController
  * class polls that queue by menas of invoking SerialThread.GetSerialMessage().
- * 
+ *
  * The serial device must send its messages separated by a newline character.
  * Neither the SerialController nor the SerialThread perform any validation
  * on the integrity of the message. It's up to the one that makes sense of the
