@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>SerialCommUnity: Communicating Arduino with Unity over COM ports</title>
+
+        <!-- Google Fonts -->
+    	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Custom style -->
+    	<link href='css/style.css' rel='stylesheet' type='text/css'>
+        <link href="css/sticky-footer.css" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div class="jumbotron text-center">
+                <p><img src="images/serialcommunity-logo.png" /></p>
+                <p>Want to connect your Arduino to Unity over a COM port?</p>
+                <p><em>SerialCommUnity</em> allows bidirectional communication over COM ports
+                        from Unity®.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-6 text-center">
+                    <a href="https://github.com/DWilches/SerialCommUnity/raw/master/UnityPackages/SerialComm.unitypackage">
+                        <div class="logo-container" align="center">
+                            <img class="img-responsive logo" src="images/unity-logo.png" />
+                            Download the Unity® Package<br/>(this is all you need)
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-5 col-sm-6 text-center">
+                    <a href="https://github.com/DWilches/SerialCommUnity">
+                        <div class="logo-container" align="center">
+                            <img class="img-responsive logo" src="images/github-logo.png" />
+                            Watch the Source<br/>
+                            (or contribute to it)
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>How does it work?</h2>
+                    <div style="margin:30px">
+                        <p><em>SerialCommUnity</em> creates a thread in which it polls a COM port, all data
+                            it receives is stored in a shared <em>thread-safe queue</em>.</p>
+                        <p>Later, your Unity program must either configure a callback that is invoked each time
+                            data is available, or call <code>ReadSerialMessage()</code> which dequeues
+                            the next message of this queue. You choose.</p>
+                        <p>You can also send data to the COM port, use <code>SendSerialMessage()</code>.</p>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <h2>What do I need to do in Unity?</h2>
+                    <div style="margin:30px">
+                        <p>There are some sample scenes inside the Unity package, they are a good starting point, but
+                        basically what you need to get <em>SerialCommUnity</em> up and running is adding the <code>SerialController</code>
+                            script to one of your GameObjects:</p>
+                        <p align="center"><img class="img-responsive img-rounded"
+                                                src="images/sample-unity-user-poll.png" /></p>
+                    <p>If you let the "Message Listener" field unset, then you need to poll <em>SerialCommUnity</em>
+                        each time you want to get a message.</p>
+                        <p>If you want <em>SerialCommUnity</em> to automatically call your own
+                        callback whenever a message arrives, then set that field to a GameObject that has the following two
+                        functions:</p>
+                        
+                        <pre class="prettyprint lang-cpp"><code>public class SampleMessageListener : MonoBehaviour
+{
+    // Invoked when a line of data is received from the serial device.
+    void OnMessageArrived(string msg)
+    {
+        ...
+    }
+
+    // Invoked when a connect/disconnect event occurs. The parameter 'success'
+    // will be 'true' upon connection, and 'false' upon disconnection or
+    // failure to connect.
+    void OnConnectionEvent(bool success)
+    {
+        ...
+    }
+}
+</code></pre>
+                        
+                        
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <h2>Arduino sample code</h2>
+                    <div style="margin:30px">
+                        <p>The Arduino code necessary for making communication with <em>SerialCommUnity</em>
+                            possible is straightforward, use the <code>Serial.println()</code> function.</p>
+                        <p>Here is an example of an Arduino program that works well with this library:</p>
+                        
+                        <pre class="prettyprint lang-cpp"><code>unsigned long last_time = 0;
+
+void setup()
+{
+    Serial.begin(9600);
+}
+
+void loop()
+{
+    // Print a heartbeat
+    if (millis() > last_time + 2000)
+    {
+        Serial.println("Arduino is alive!!");
+        last_time = millis();
+    }
+
+    // Send some message when I receive an 'A' or a 'Z'.
+    switch (Serial.read())
+    {
+        case 'A':
+            Serial.println("That's the first letter of the abecedarium.");
+            break;
+        case 'Z':
+            Serial.println("That's the last letter of the abecedarium.");
+            break;
+    }
+}
+</code></pre>
+
+                    </div>
+
+                </div>
+                
+                <div class="col-lg-12">
+                    <h2>Side notes:</h2>
+                    <ul style="margin:30px">
+                        <li><p>By default, Unity uses a subset of the .NET framework, so if you get this error message:</p>
+                            <blockquote>
+                            Assets/SerialComm/Scripts/SerialThread.cs(9,17): error CS0234: The type or namespace name 'Ports' does not exist in the namespace 'System.IO'. Are you missing an assembly reference?
+                            </blockquote>
+                            <p>It's because the current "API Compatibility Level" of your Unity project is set to ".NET 2.0 Subset", which doesn't contain the classes necessary for serial communication.</p>
+                            <p>To solve the problem, go to <code>Edit</code> -> <code>Project Settings</code> -> <code>Player</code>, 
+                                and under "Other Settings" find an option that reads "Api Compatibility Level" and change it from ".NET 2.0 Subset" to ".NET 2.0".</p>
+                        </li>
+                        <li>Does this library only support communication based on lines of strings? Yes, but you can change it easily to support your own protocol. Check the <code>SerialThread</code> script.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div><!-- container -->
+
+
+        <!-- Fixed footer -->
+        <footer class="footer">
+            <div class="container text-center">
+                <p>
+                    Contact me at:<br/> dwilches<i class="fa fa-at" aria-hidden="true" style="padding:2px"></i>gmail.com
+                </p>
+            </div>
+        </footer>
+
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <script src="https://use.fontawesome.com/bb71d574c4.js"></script>
+        <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=cs&amp;skin=sunburst"></script>
+
+    </body>
+</html>

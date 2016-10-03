@@ -62,9 +62,8 @@ Sample Arduino Program
 License
 =======
 
-
 This work is released under the [Creative Commons Attributions](https://creativecommons.org/licenses/by/2.0/) license.
 
 If you use this library please let me know, so I know my work has been useful to you :)
 
-![CC Attribution](images/CC-BY_icon.png?raw=true)
+![CC Attribution](docs/images/CC-BY_icon.png?raw=true)

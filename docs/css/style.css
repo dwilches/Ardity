@@ -1,0 +1,47 @@
+body {
+    font-family: 'Raleway', sans-serif;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-color: #222c37 !important;
+    color: white;
+}
+
+.jumbotron {
+    background-color: #303e4e !important;
+}
+
+.logo {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.logo-container {
+    background-color: #303e4e !important;
+    margin: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 20px;
+}
+
+.logo-container {
+    padding: 10px;
+    border: 1px solid transparent;
+    transition: 0.2s;
+}
+.logo-container:hover {
+    border: 1px solid rgb(200, 200, 200);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 5px 2px;
+    background: rgba(200, 200, 200, 0.1);
+    transition: 0.5s;
+}
+
+a, a:link, a:hover, a:active, a:visited {
+    text-decoration: none;
+    color: white;
+}
+
+blockquote {
+    margin: 30px;
+    font-family: "Courier New";
+    font-size: 10pt;
+}
