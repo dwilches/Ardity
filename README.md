@@ -59,6 +59,55 @@ Sample Arduino Program
         }
     }
 
+Another sample Arduino Program
+======================
+This sample has a tear-down function (check the scene "DemoSceneUserPoll_ReadWrite_TearDown"),
+it will be executed when the Unity program stops. This sample expects you to be using an Arduino UNO,
+if not, change the number of the pin to which the LED is connected.
+
+    unsigned long last_time = 0;
+    int ledPin = 13;
+
+    void setup()
+    {
+        Serial.begin(9600);
+        pinMode(ledPin, OUTPUT);
+        digitalWrite(ledPin, LOW);
+    }
+
+    void loop()
+    {
+        // Print a heartbeat
+        if (millis() > last_time + 2000)
+        {
+            Serial.println("Arduino is alive!!");
+            last_time = millis();
+        }
+
+        // Send some message when I receive an 'A' or a 'Z'.
+        switch (Serial.read())
+        {
+            case '1':
+                digitalWrite(ledPin, HIGH);
+                break;
+            case '2':
+                digitalWrite(ledPin, LOW);
+                break;
+            
+            // Execute tear-down functionality
+            case 'X':
+                for (int i = 0; i < 10; i++)
+                {
+                    digitalWrite(ledPin, HIGH);
+                    delay(100);
+                    digitalWrite(ledPin, LOW);
+                    delay(100);
+                }
+                break;
+        }
+    }
+    
+    
 License
 =======
 

@@ -157,6 +157,14 @@ public class SerialThread
                     Thread.Sleep(delayBeforeReconnecting);
                 }
             }
+            
+            // Before closing the COM port, give the opportunity for all messages
+            // from the output queue to reach the other endpoint.
+            while (outputQueue.Count != 0)
+            {
+                string outputMessage = (string)outputQueue.Dequeue();
+                serialPort.WriteLine(outputMessage);
+            }
 
             // Attempt to do a final cleanup. This method doesn't fail even if
             // the port is in an invalid status.

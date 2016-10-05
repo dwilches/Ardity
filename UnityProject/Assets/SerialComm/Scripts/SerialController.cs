@@ -17,7 +17,7 @@ using System.Threading;
  * It creates a Thread that communicates with the serial port and continually
  * polls the messages on the wire.
  * That Thread puts all the messages inside a Queue, and this SerialController
- * class polls that queue by menas of invoking SerialThread.GetSerialMessage().
+ * class polls that queue by means of invoking SerialThread.GetSerialMessage().
  *
  * The serial device must send its messages separated by a newline character.
  * Neither the SerialController nor the SerialThread perform any validation
@@ -76,6 +76,11 @@ public class SerialController : MonoBehaviour
     // ------------------------------------------------------------------------
     void OnDisable()
     {
+        // If there is a user-defined tear-down function, execute it before
+        // closing the underlying COM port.
+        if (userDefinedTearDownFunction != null)
+            userDefinedTearDownFunction();
+
         // The serialThread reference should never be null at this point,
         // unless an Exception happened in the OnEnable(), in which case I've
         // no idea what face Unity will make.
@@ -137,6 +142,17 @@ public class SerialController : MonoBehaviour
     public void SendSerialMessage(string message)
     {
         serialThread.SendSerialMessage(message);
+    }
+
+    // ------------------------------------------------------------------------
+    // Executes a user-defined function before Unity closes the COM port, so
+    // the user can send some tear-down message to the hardware reliably.
+    // ------------------------------------------------------------------------
+    public delegate void TearDownFunction();
+    private TearDownFunction userDefinedTearDownFunction;
+    public void SetTearDownFunction(TearDownFunction userFunction)
+    {
+        this.userDefinedTearDownFunction = userFunction;
     }
 
 }
