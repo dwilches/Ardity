@@ -10,20 +10,12 @@ using UnityEngine;
 using System.Threading;
 
 /**
- * This class allows a Unity program to continually check for messages from a
- * serial device.
- *
- * It creates a Thread that communicates with the serial port and continually
- * polls the messages on the wire.
- * That Thread puts all the messages inside a Queue, and this SerialController
- * class polls that queue by means of invoking SerialThread.GetSerialMessage().
- *
- * The serial device must send its messages separated by a newline character.
- * Neither the SerialController nor the SerialThread perform any validation
- * on the integrity of the message. It's up to the one that makes sense of the
- * data.
+ * While 'SerialController' only allows reading/sending text data that is
+ * terminated by new-lines, this class allows reading/sending messages 
+ * using a binary protocol where each message is separated from the next by 
+ * a 1-char delimiter.
  */
-public class SerialController : MonoBehaviour
+public class SerialControllerCustomDelimiter : MonoBehaviour
 {
     [Tooltip("Port name with which the SerialPort object will be created.")]
     public string portName = "COM3";
@@ -43,17 +35,13 @@ public class SerialController : MonoBehaviour
              "New messages will be discarded.")]
     public int maxUnreadMessages = 1;
 
-    // Constants used to mark the start and end of a connection. There is no
-    // way you can generate clashing messages from your serial device, as I
-    // compare the references of these strings, no their contents. So if you
-    // send these same strings from the serial device, upon reconstruction they
-    // will have different reference ids.
-    public const string SERIAL_DEVICE_CONNECTED = "__Connected__";
-    public const string SERIAL_DEVICE_DISCONNECTED = "__Disconnected__";
+    [Tooltip("Maximum number of unread data messages in the queue. " +
+             "New messages will be discarded.")]
+    public byte separator = 90;
 
     // Internal reference to the Thread and the object that runs in it.
     protected Thread thread;
-    protected SerialThreadLines serialThread;
+    protected SerialThreadBinaryDelimited serialThread;
 
 
     // ------------------------------------------------------------------------
@@ -63,10 +51,11 @@ public class SerialController : MonoBehaviour
     // ------------------------------------------------------------------------
     void OnEnable()
     {
-        serialThread = new SerialThreadLines(portName, 
-                                             baudRate, 
-                                             reconnectionDelay,
-                                             maxUnreadMessages);
+        serialThread = new SerialThreadBinaryDelimited(portName,
+                                                       baudRate,
+                                                       reconnectionDelay,
+                                                       maxUnreadMessages,
+                                                       separator);
         thread = new Thread(new ThreadStart(serialThread.RunForever));
         thread.Start();
     }
@@ -113,34 +102,29 @@ public class SerialController : MonoBehaviour
             return;
 
         // Read the next message from the queue
-        string message = (string)serialThread.ReadMessage();
+        byte[] message = ReadSerialMessage();
         if (message == null)
             return;
 
         // Check if the message is plain data or a connect/disconnect event.
-        if (ReferenceEquals(message, SERIAL_DEVICE_CONNECTED))
-            messageListener.SendMessage("OnConnectionEvent", true);
-        else if (ReferenceEquals(message, SERIAL_DEVICE_DISCONNECTED))
-            messageListener.SendMessage("OnConnectionEvent", false);
-        else
-            messageListener.SendMessage("OnMessageArrived", message);
+        messageListener.SendMessage("OnMessageArrived", message);
     }
 
     // ------------------------------------------------------------------------
     // Returns a new unread message from the serial device. You only need to
     // call this if you don't provide a message listener.
     // ------------------------------------------------------------------------
-    public string ReadSerialMessage()
+    public byte[] ReadSerialMessage()
     {
         // Read the next message from the queue
-        return (string)serialThread.ReadMessage();
+        return (byte[]) serialThread.ReadMessage();
     }
 
     // ------------------------------------------------------------------------
     // Puts a message in the outgoing queue. The thread object will send the
     // message to the serial device when it considers it's appropriate.
     // ------------------------------------------------------------------------
-    public void SendSerialMessage(string message)
+    public void SendSerialMessage(byte[] message)
     {
         serialThread.SendMessage(message);
     }
