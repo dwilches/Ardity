@@ -74,7 +74,6 @@ public class SerialThread
         outputQueue = Queue.Synchronized(new Queue());
     }
 
-
     // ------------------------------------------------------------------------
     // Poll the internal message queue returning the next available message.
     // It returns null if no message has arrived since the latest invocation.
@@ -243,9 +242,16 @@ public class SerialThread
             // this line so it eventually reaches the Message Listener.
             // Otherwise, discard the line.
             string inputMessage = serialPort.ReadLine();
-            if (inputMessage != null && inputQueue.Count < maxUnreadMessages)
+            if (inputMessage != null)
             {
-                inputQueue.Enqueue(inputMessage);
+                if (inputQueue.Count < maxUnreadMessages)
+                {
+                    inputQueue.Enqueue(inputMessage);
+                }
+                else
+                {
+                    Debug.LogWarning("Queue is full. Dropping message: " + inputMessage);
+                }
             }
         }
         catch (TimeoutException)
