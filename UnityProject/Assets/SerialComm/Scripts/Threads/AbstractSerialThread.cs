@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SerialCommUnity (Serial Communication for Unity)
  * Author: Daniel Wilches <dwilches@gmail.com>
  *
@@ -21,7 +21,7 @@ using System.Threading;
  * open this file unless you are introducing incompatibilities for upcoming
  * versions.
  */
-public class SerialThread
+public abstract class AbstractSerialThread
 {
     // Parameters passed from SerialController, used for connecting to the
     // serial device as explained in the SerialController documentation.
@@ -51,6 +51,8 @@ public class SerialThread
     // invokes 'RequestStop()' this variable is set.
     private bool stopRequested = false;
 
+    private bool enqueueStatusMessages = false;
+
 
     /**************************************************************************
      * Methods intended to be invoked from the Unity thread.
@@ -60,40 +62,20 @@ public class SerialThread
     // Constructs the thread object. This object is not a thread actually, but
     // its method 'RunForever' can later be used to create a real Thread.
     // ------------------------------------------------------------------------
-    public SerialThread(string portName,
-                        int baudRate,
-                        int delayBeforeReconnecting,
-                        int maxUnreadMessages)
+    public AbstractSerialThread(string portName,
+                                int baudRate,
+                                int delayBeforeReconnecting,
+                                int maxUnreadMessages,
+                                bool enqueueStatusMessages)
     {
         this.portName = portName;
         this.baudRate = baudRate;
         this.delayBeforeReconnecting = delayBeforeReconnecting;
         this.maxUnreadMessages = maxUnreadMessages;
+        this.enqueueStatusMessages = enqueueStatusMessages;
 
         inputQueue = Queue.Synchronized(new Queue());
         outputQueue = Queue.Synchronized(new Queue());
-    }
-
-    // ------------------------------------------------------------------------
-    // Poll the internal message queue returning the next available message.
-    // It returns null if no message has arrived since the latest invocation.
-    // ------------------------------------------------------------------------
-    public string ReadSerialMessage()
-    {
-        if (inputQueue.Count == 0)
-            return null;
-
-        return (string)inputQueue.Dequeue();
-    }
-
-    // ------------------------------------------------------------------------
-    // Sends a message to the serial device. It writes the message to the
-    // output queue, later the method 'RunOnce' reads this queue and sends
-    // the message to the serial device.
-    // ------------------------------------------------------------------------
-    public void SendSerialMessage(string message)
-    {
-        outputQueue.Enqueue(message);
     }
 
     // ------------------------------------------------------------------------
@@ -107,6 +89,30 @@ public class SerialThread
         }
     }
 
+    // ------------------------------------------------------------------------
+    // Polls the internal message queue returning the next available message
+    // in a generic form. This can be invoked by subclasses to change the
+    // type of the returned object.
+    // It returns null if no message has arrived since the latest invocation.
+    // ------------------------------------------------------------------------
+    public object ReadMessage()
+    {
+        if (inputQueue.Count == 0)
+            return null;
+
+        return inputQueue.Dequeue();
+    }
+
+    // ------------------------------------------------------------------------
+    // Schedules a message to be sent. It writes the message to the
+    // output queue, later the method 'RunOnce' reads this queue and sends
+    // the message to the serial device.
+    // ------------------------------------------------------------------------
+    public void SendMessage(object message)
+    {
+        outputQueue.Enqueue(message);
+    }
+
 
     /**************************************************************************
      * Methods intended to be invoked from the SerialComm thread (the one
@@ -114,13 +120,13 @@ public class SerialThread
      *************************************************************************/
 
     // ------------------------------------------------------------------------
-    // Enters an almost infinite loop of attempting conenction to the serial
+    // Enters an almost infinite loop of attempting connection to the serial
     // device, reading messages and sending messages. This loop can be stopped
     // by invoking 'RequestStop'.
     // ------------------------------------------------------------------------
     public void RunForever()
     {
-        // This try is for having a log message in case of an unexpected
+        // This 'try' is for having a log message in case of an unexpected
         // exception.
         try
         {
@@ -128,7 +134,6 @@ public class SerialThread
             {
                 try
                 {
-                    // Try to connect
                     AttemptConnection();
 
                     // Enter the semi-infinite loop of reading/writing to the
@@ -140,9 +145,10 @@ public class SerialThread
                 {
                     // A disconnection happened, or there was a problem
                     // reading/writing to the device. Log the detailed message
-                    // to the console and notify the listener too.
+                    // to the console and notify the listener.
                     Debug.LogWarning("Exception: " + ioe.Message + " StackTrace: " + ioe.StackTrace);
-                    inputQueue.Enqueue(SerialController.SERIAL_DEVICE_DISCONNECTED);
+                    if (enqueueStatusMessages)
+                        inputQueue.Enqueue(SerialController.SERIAL_DEVICE_DISCONNECTED);
 
                     // As I don't know in which stage the SerialPort threw the
                     // exception I call this method that is very safe in
@@ -156,13 +162,12 @@ public class SerialThread
                     Thread.Sleep(delayBeforeReconnecting);
                 }
             }
-            
+
             // Before closing the COM port, give the opportunity for all messages
             // from the output queue to reach the other endpoint.
             while (outputQueue.Count != 0)
             {
-                string outputMessage = (string)outputQueue.Dequeue();
-                serialPort.WriteLine(outputMessage);
+                SendToWire(outputQueue.Dequeue(), serialPort);
             }
 
             // Attempt to do a final cleanup. This method doesn't fail even if
@@ -185,7 +190,8 @@ public class SerialThread
         serialPort.WriteTimeout = writeTimeout;
         serialPort.Open();
 
-        inputQueue.Enqueue(SerialController.SERIAL_DEVICE_CONNECTED);
+        if (enqueueStatusMessages)
+            inputQueue.Enqueue(SerialController.SERIAL_DEVICE_CONNECTED);
     }
 
     // ------------------------------------------------------------------------
@@ -233,15 +239,14 @@ public class SerialThread
             // Send a message.
             if (outputQueue.Count != 0)
             {
-                string outputMessage = (string)outputQueue.Dequeue();
-                serialPort.WriteLine(outputMessage);
+                SendToWire(outputQueue.Dequeue(), serialPort);
             }
 
             // Read a message.
             // If a line was read, and we have not filled our queue, enqueue
             // this line so it eventually reaches the Message Listener.
             // Otherwise, discard the line.
-            string inputMessage = serialPort.ReadLine();
+            object inputMessage = ReadFromWire(serialPort);
             if (inputMessage != null)
             {
                 if (inputQueue.Count < maxUnreadMessages)
@@ -259,4 +264,14 @@ public class SerialThread
             // This is normal, not everytime we have a report from the serial device
         }
     }
+
+    // ------------------------------------------------------------------------
+    // Sends a message through the serialPort.
+    // ------------------------------------------------------------------------
+    protected abstract void SendToWire(object message, SerialPort serialPort);
+
+    // ------------------------------------------------------------------------
+    // Reads and returns a message from the serial port.
+    // ------------------------------------------------------------------------
+    protected abstract object ReadFromWire(SerialPort serialPort);
 }

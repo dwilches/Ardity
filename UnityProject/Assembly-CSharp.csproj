@@ -46,12 +46,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\SerialComm\Scripts\Samples\SampleCustomDelimiter.cs" />
      <Compile Include="Assets\SerialComm\Scripts\Samples\SampleMessageListener.cs" />
+     <Compile Include="Assets\SerialComm\Scripts\Samples\SampleTearDown.cs" />
      <Compile Include="Assets\SerialComm\Scripts\Samples\SampleUserPolling_JustRead.cs" />
      <Compile Include="Assets\SerialComm\Scripts\Samples\SampleUserPolling_ReadWrite.cs" />
-     <Compile Include="Assets\SerialComm\Scripts\Samples\SampleUserPolling_ReadWrite_TearDown.cs" />
      <Compile Include="Assets\SerialComm\Scripts\SerialController.cs" />
-     <Compile Include="Assets\SerialComm\Scripts\SerialThread.cs" />
+     <Compile Include="Assets\SerialComm\Scripts\SerialControllerCustomDelimiter.cs" />
+     <Compile Include="Assets\SerialComm\Scripts\Threads\AbstractSerialThread.cs" />
+     <Compile Include="Assets\SerialComm\Scripts\Threads\SerialThread.cs" />
+     <Compile Include="Assets\SerialComm\Scripts\Threads\SerialThreadCustomDelimiter.cs" />
+     <Compile Include="Assets\SerialComm\Scripts\Threads\SerialThreadLines.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

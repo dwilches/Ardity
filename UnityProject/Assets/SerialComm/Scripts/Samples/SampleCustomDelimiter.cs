@@ -8,20 +8,21 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Text;
 
 /**
  * Sample for reading using polling by yourself, and writing too.
  */
-public class SampleUserPolling_ReadWrite : MonoBehaviour
+public class SampleCustomDelimiter : MonoBehaviour
 {
-    public SerialController serialController;
+    public SerialControllerCustomDelimiter serialController;
 
     // Initialization
     void Start()
     {
-        serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
+        serialController = GameObject.Find("SerialController").GetComponent<SerialControllerCustomDelimiter>();
 
-        Debug.Log("Press A or Z to execute some actions");
+        Debug.Log("Press the SPACEBAR to execute some action");
     }
 
     // Executed each frame
@@ -33,16 +34,12 @@ public class SampleUserPolling_ReadWrite : MonoBehaviour
 
         // If you press one of these keys send it to the serial device. A
         // sample serial device that accepts this input is given in the README.
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Sending A");
-            serialController.SendSerialMessage("A");
-        }
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            Debug.Log("Sending Z");
-            serialController.SendSerialMessage("Z");
+            Debug.Log("Sending some action");
+            // Sends a 65 (ascii for 'A') followed by an space (ascii 32, which 
+            // is configured in the controller of our scene as the separator).
+            serialController.SendSerialMessage(new byte[] { 65, 32 });
         }
 
 
@@ -50,17 +47,14 @@ public class SampleUserPolling_ReadWrite : MonoBehaviour
         // Receive data
         //---------------------------------------------------------------------
 
-        string message = serialController.ReadSerialMessage();
+        byte[] message = serialController.ReadSerialMessage();
 
         if (message == null)
             return;
 
-        // Check if the message is plain data or a connect/disconnect event.
-        if (ReferenceEquals(message, SerialController.SERIAL_DEVICE_CONNECTED))
-            Debug.Log("Connection established");
-        else if (ReferenceEquals(message, SerialController.SERIAL_DEVICE_DISCONNECTED))
-            Debug.Log("Connection attempt failed or disconnection detected");
-        else
-            Debug.Log("Message arrived: " + message);
+        StringBuilder sb = new StringBuilder();
+        foreach (byte b in message)
+            sb.AppendFormat("(#{0}={1})    ", b, (char)b);
+        Debug.Log("Received some bytes, printing their ascii codes: " + sb);
     }
 }

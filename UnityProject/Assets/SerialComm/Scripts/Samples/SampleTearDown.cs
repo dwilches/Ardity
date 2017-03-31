@@ -12,7 +12,7 @@ using System.Collections;
 /**
  * Sample for reading using polling by yourself, and writing too.
  */
-public class SampleUserPolling_ReadWrite_TearDown : MonoBehaviour
+public class SampleTearDown : MonoBehaviour
 {
     public SerialController serialController;
 
@@ -22,6 +22,8 @@ public class SampleUserPolling_ReadWrite_TearDown : MonoBehaviour
         serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
 
         serialController.SetTearDownFunction(lightsShutdown);
+
+        Debug.Log("Press 1 or 2 to execute some actions");
     }
 
     // Executed each frame

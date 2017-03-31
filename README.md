@@ -30,6 +30,7 @@ Go to Edit -> Project Settings -> Player, and under "Other Settings" find an opt
 
 Sample Arduino Program
 ======================
+This sample communicates with any of the scenes called: `DemoScene_AutoPoll*` or `DemoScene_UserPoll*`.
 
     unsigned long last_time = 0;
 
@@ -59,9 +60,9 @@ Sample Arduino Program
         }
     }
 
-Another sample Arduino Program
+Sample with Tear-Down function
 ======================
-This sample has a tear-down function (check the scene "DemoSceneUserPoll_ReadWrite_TearDown"),
+This sample has a tear-down function (use it with the scene `DemoScene_SampleTearDown`),
 it will be executed when the Unity program stops. This sample expects you to be using an Arduino UNO,
 if not, change the number of the pin to which the LED is connected.
 
@@ -89,9 +90,11 @@ if not, change the number of the pin to which the LED is connected.
         {
             case '1':
                 digitalWrite(ledPin, HIGH);
+                Serial.println("Lights are ON");
                 break;
             case '2':
                 digitalWrite(ledPin, LOW);
+                Serial.println("Lights are OFF");
                 break;
             
             // Execute tear-down functionality
@@ -103,10 +106,51 @@ if not, change the number of the pin to which the LED is connected.
                     digitalWrite(ledPin, LOW);
                     delay(100);
                 }
+                
+                // This message won't arrive at Unity, as it is already in the
+                // process of closing the port
+                Serial.println("Tearing down some work inside Arduino");
                 break;
         }
     }
-    
+
+Sample with custom delimiter
+======================
+
+    // This is the separator configured in Unity
+    #define SEPARATOR 255
+
+    unsigned long last_time = 0;
+    int ledPin = 13;
+
+    byte responseMessage[] = { 65, 66, 67, SEPARATOR };
+    byte aliveMessage[] = { 65, 76, 73, 86, 69, 33, SEPARATOR };
+
+    void setup()
+    {
+        Serial.begin(9600);
+
+        aliveMessage[8] = SEPARATOR;
+    }
+
+    void loop()
+    {
+        // Print a heartbeat
+        if (millis() > last_time + 2000)
+        {
+            Serial.write(aliveMessage, sizeof(aliveMessage));
+            Serial.flush();
+            last_time = millis();
+        }
+        
+        // React to "commands"
+        if (Serial.read() == ' ')
+        {
+            Serial.write(responseMessage, sizeof(responseMessage));
+            Serial.flush();
+        }
+    }
+
     
 License
 =======
