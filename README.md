@@ -151,6 +151,12 @@ Sample with custom delimiter
         }
     }
 
+COM port names
+==
+To open a COM port from `SerialCommUnity` you need to use one of these naming conventions:
+* `COM1`, `COM2`, ... for COM1 through COM9
+* `\\.\COM10`, `\\.\COM11`, ... for COM10 and up
+
     
 License
 =======
