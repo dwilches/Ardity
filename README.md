@@ -1,8 +1,9 @@
-# SerialCommUnity
+# Ardity
 Assets for integrating Arduino and Unity (or Unity and any hardware that communicates over a COM port)
 
 WebSite URL: https://ardity.dwilches.com
 
+***(Previously known as: SerialCommUnity)***
 
 Instructions
 ============
@@ -140,7 +141,7 @@ Sample with custom delimiter
 
 COM port names
 ==
-To open a COM port from `SerialCommUnity` you need to use one of these naming conventions:
+To open a COM port from `Ardity` you need to use one of these naming conventions:
 * `COM1`, `COM2`, ... for COM1 through COM9
 * `\\.\COM10`, `\\.\COM11`, ... for COM10 and up
 
@@ -150,7 +151,7 @@ Possible Problem When Importing This Package
 
 If you get this error message:
 
-> Assets/SerialComm/Scripts/SerialThread.cs(9,17): error CS0234: The type or namespace name 'Ports' does not exist in the namespace 'System.IO'. Are you missing an assembly reference?
+> Assets/Ardity/Scripts/SerialThread.cs(9,17): error CS0234: The type or namespace name 'Ports' does not exist in the namespace 'System.IO'. Are you missing an assembly reference?
 
 It's because the current "API Compatibility Level" of your Unity project is set to ".NET 2.0 Subset", which doesn't contain the classes necessary for serial communication. Do this to solve the problem:
 
