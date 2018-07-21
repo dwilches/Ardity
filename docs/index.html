@@ -2,7 +2,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>SerialCommUnity: Communicating Arduino with Unity over COM ports</title>
+        <meta name="keywords" content="Serial Port, Unity Game Engine, COM Port, Arduino">
+        <meta name="author" content="Daniel Wilches">
+        <meta name="description" content="Want to connect your Arduino to Unity over a COM port?">
+        <title>SerialCommUnity: Arduino + Unity over COM ports</title>
 
         <!-- Google Fonts -->
     	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
@@ -21,7 +24,9 @@
         <div class="container">
 
             <div class="jumbotron text-center">
-                <p><img src="images/serialcommunity-logo.png" /></p>
+                <p><img src="images/serialcommunity-logo.png"
+                        alt="Serial Comm Unity"
+                        title="Serial Comm Unity" /></p>
                 <p>Want to connect your Arduino to Unity over a COM port?</p>
                 <p><em>SerialCommUnity</em> allows bidirectional communication over COM ports
                         from Unity®.</p>
@@ -31,7 +36,10 @@
                 <div class="col-lg-5 col-lg-offset-1 col-sm-6 text-center">
                     <a href="https://github.com/DWilches/SerialCommUnity/raw/master/UnityPackages/SerialComm.unitypackage">
                         <div class="logo-container" align="center">
-                            <img class="img-responsive logo" src="images/unity-logo.png" />
+                            <img class="img-responsive logo"
+                                 src="images/unity-logo.png"
+                                 alt="Unity package"
+                                 title="Unity package" />
                             Download the Unity® Package<br/>(this is all you need)
                         </div>
                     </a>
@@ -39,7 +47,10 @@
                 <div class="col-lg-5 col-sm-6 text-center">
                     <a href="https://github.com/DWilches/SerialCommUnity">
                         <div class="logo-container" align="center">
-                            <img class="img-responsive logo" src="images/github-logo.png" />
+                            <img class="img-responsive logo"
+                                 src="images/github-logo.png"
+                                 alt="Source code at GitHub"
+                                 title="Source code at GitHub" />
                             Watch the Source<br/>
                             (or contribute to it)
                         </div>
@@ -65,8 +76,12 @@
                         <p>There are some sample scenes inside the Unity package, they are a good starting point, but
                         basically what you need to get <em>SerialCommUnity</em> up and running is adding the <code>SerialController</code>
                             script to one of your GameObjects:</p>
-                        <p align="center"><img class="img-responsive img-rounded"
-                                                src="images/sample-unity-user-poll.png" /></p>
+                        <p align="center">
+                            <img class="img-responsive img-rounded"
+                                 src="images/sample-unity-user-poll.png"
+                                 alt="Configuring SerialController"
+                                 title="Configuring SerialController" />
+                        </p>
                     <p>If you let the "Message Listener" field unset, then you need to poll <em>SerialCommUnity</em>
                         each time you want to get a message.</p>
                         <p>If you want <em>SerialCommUnity</em> to automatically call your own
