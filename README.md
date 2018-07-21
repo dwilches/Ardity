@@ -14,20 +14,6 @@ It also recognizes two input messages and reacts to them, this is for bidirectio
 So if you want to use that scene just run it and press the keys 'A' or 'Z' to see what you Arduino has to say about it.
 
 
-
-Possible Problem When Importing This Package
-============================================
-
-If you get this error message:
-
-> Assets/SerialComm/Scripts/SerialThread.cs(9,17): error CS0234: The type or namespace name 'Ports' does not exist in the namespace 'System.IO'. Are you missing an assembly reference?
-
-It's because the current "API Compatibility Level" of your Unity project is set to ".NET 2.0 Subset", which doesn't contain the classes necessary for serial communication. Do this to solve the problem:
-
-Go to Edit -> Project Settings -> Player, and under "Other Settings" find an option that reads "Api Compatibility Level" and change it from ".NET 2.0 Subset" to ".NET 2.0".
-
-
-
 Sample Arduino Program
 ======================
 This sample communicates with any of the scenes called: `DemoScene_AutoPoll*` or `DemoScene_UserPoll*`.
@@ -156,6 +142,18 @@ COM port names
 To open a COM port from `SerialCommUnity` you need to use one of these naming conventions:
 * `COM1`, `COM2`, ... for COM1 through COM9
 * `\\.\COM10`, `\\.\COM11`, ... for COM10 and up
+
+
+Possible Problem When Importing This Package
+============================================
+
+If you get this error message:
+
+> Assets/SerialComm/Scripts/SerialThread.cs(9,17): error CS0234: The type or namespace name 'Ports' does not exist in the namespace 'System.IO'. Are you missing an assembly reference?
+
+It's because the current "API Compatibility Level" of your Unity project is set to ".NET 2.0 Subset", which doesn't contain the classes necessary for serial communication. Do this to solve the problem:
+
+Go to Edit -> Project Settings -> Player, and under "Other Settings" find an option that reads "Api Compatibility Level" and change it from ".NET 2.0 Subset" to ".NET 2.0".
 
     
 License
