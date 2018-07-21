@@ -1,5 +1,5 @@
 ﻿/**
- * SerialCommUnity (Serial Communication for Unity)
+ * Ardity (Serial Communication for Arduino + Unity)
  * Author: Daniel Wilches <dwilches@gmail.com>
  *
  * This work is released under the Creative Commons Attributions license.
