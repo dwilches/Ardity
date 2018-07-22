@@ -1,5 +1,11 @@
-# Ardity
-Assets for integrating Arduino and Unity (or Unity and any hardware that communicates over a COM port)
+<div align="center">
+	<img src="docs/images/full-logo.png" 
+         alt="Ardity: Arduino + Unity"3
+         title="Ardity: Arduino + Unity">
+    <h1>Arduino + Unity communication made easy</h1>
+</div>
+
+Well ... actually not just Arduino, but any piece of hardware/software that communicates over serial (COM) ports !
 
 WebSite URL: https://ardity.dwilches.com
 
@@ -20,33 +26,35 @@ Sample Arduino Program
 ======================
 This sample communicates with any of the scenes called: `DemoScene_AutoPoll*` or `DemoScene_UserPoll*`.
 
-    unsigned long last_time = 0;
+```cs
+unsigned long last_time = 0;
 
-    void setup()
+void setup()
+{
+    Serial.begin(9600);
+}
+
+void loop()
+{
+    // Print a heartbeat
+    if (millis() > last_time + 2000)
     {
-        Serial.begin(9600);
+        Serial.println("Arduino is alive!!");
+        last_time = millis();
     }
 
-    void loop()
+    // Send some message when I receive an 'A' or a 'Z'.
+    switch (Serial.read())
     {
-        // Print a heartbeat
-        if (millis() > last_time + 2000)
-        {
-            Serial.println("Arduino is alive!!");
-            last_time = millis();
-        }
-
-        // Send some message when I receive an 'A' or a 'Z'.
-        switch (Serial.read())
-        {
-            case 'A':
-                Serial.println("That's the first letter of the abecedarium.");
-                break;
-            case 'Z':
-                Serial.println("That's the last letter of the abecedarium.");
-                break;
-        }
+        case 'A':
+            Serial.println("That's the first letter of the abecedarium.");
+            break;
+        case 'Z':
+            Serial.println("That's the last letter of the abecedarium.");
+            break;
     }
+}
+```
 
 Sample with Tear-Down function
 ======================
@@ -54,90 +62,94 @@ This sample has a tear-down function (use it with the scene `DemoScene_SampleTea
 it will be executed when the Unity program stops. This sample expects you to be using an Arduino UNO,
 if not, change the number of the pin to which the LED is connected.
 
-    unsigned long last_time = 0;
-    int ledPin = 13;
+```cs
+unsigned long last_time = 0;
+int ledPin = 13;
 
-    void setup()
+void setup()
+{
+    Serial.begin(9600);
+    pinMode(ledPin, OUTPUT);
+    digitalWrite(ledPin, LOW);
+}
+
+void loop()
+{
+    // Print a heartbeat
+    if (millis() > last_time + 2000)
     {
-        Serial.begin(9600);
-        pinMode(ledPin, OUTPUT);
-        digitalWrite(ledPin, LOW);
+        Serial.println("Arduino is alive!!");
+        last_time = millis();
     }
 
-    void loop()
+    // Send some message when I receive an 'A' or a 'Z'.
+    switch (Serial.read())
     {
-        // Print a heartbeat
-        if (millis() > last_time + 2000)
-        {
-            Serial.println("Arduino is alive!!");
-            last_time = millis();
-        }
-
-        // Send some message when I receive an 'A' or a 'Z'.
-        switch (Serial.read())
-        {
-            case '1':
+        case '1':
+            digitalWrite(ledPin, HIGH);
+            Serial.println("Lights are ON");
+            break;
+        case '2':
+            digitalWrite(ledPin, LOW);
+            Serial.println("Lights are OFF");
+            break;
+        
+        // Execute tear-down functionality
+        case 'X':
+            for (int i = 0; i < 10; i++)
+            {
                 digitalWrite(ledPin, HIGH);
-                Serial.println("Lights are ON");
-                break;
-            case '2':
+                delay(100);
                 digitalWrite(ledPin, LOW);
-                Serial.println("Lights are OFF");
-                break;
+                delay(100);
+            }
             
-            // Execute tear-down functionality
-            case 'X':
-                for (int i = 0; i < 10; i++)
-                {
-                    digitalWrite(ledPin, HIGH);
-                    delay(100);
-                    digitalWrite(ledPin, LOW);
-                    delay(100);
-                }
-                
-                // This message won't arrive at Unity, as it is already in the
-                // process of closing the port
-                Serial.println("Tearing down some work inside Arduino");
-                break;
-        }
+            // This message won't arrive at Unity, as it is already in the
+            // process of closing the port
+            Serial.println("Tearing down some work inside Arduino");
+            break;
     }
+}
+```
 
 Sample with custom delimiter
 ======================
 
-    // This is the separator configured in Unity
-    #define SEPARATOR 255
+```cs
+// This is the separator configured in Unity
+#define SEPARATOR 255
 
-    unsigned long last_time = 0;
-    int ledPin = 13;
+unsigned long last_time = 0;
+int ledPin = 13;
 
-    byte responseMessage[] = { 65, 66, 67, SEPARATOR };
-    byte aliveMessage[] = { 65, 76, 73, 86, 69, 33, SEPARATOR };
+byte responseMessage[] = { 65, 66, 67, SEPARATOR };
+byte aliveMessage[] = { 65, 76, 73, 86, 69, 33, SEPARATOR };
 
-    void setup()
+void setup()
+{
+    Serial.begin(9600);
+
+    aliveMessage[8] = SEPARATOR;
+}
+
+void loop()
+{
+    // Print a heartbeat
+    if (millis() > last_time + 2000)
     {
-        Serial.begin(9600);
-
-        aliveMessage[8] = SEPARATOR;
+        Serial.write(aliveMessage, sizeof(aliveMessage));
+        Serial.flush();
+        last_time = millis();
     }
-
-    void loop()
+    
+    // React to "commands"
+    if (Serial.read() == ' ')
     {
-        // Print a heartbeat
-        if (millis() > last_time + 2000)
-        {
-            Serial.write(aliveMessage, sizeof(aliveMessage));
-            Serial.flush();
-            last_time = millis();
-        }
-        
-        // React to "commands"
-        if (Serial.read() == ' ')
-        {
-            Serial.write(responseMessage, sizeof(responseMessage));
-            Serial.flush();
-        }
+        Serial.write(responseMessage, sizeof(responseMessage));
+        Serial.flush();
     }
+}
+```
 
 COM port names
 ==
