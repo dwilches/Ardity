@@ -5,7 +5,7 @@
     <h1>Arduino + Unity communication made easy</h1>
 </div>
 
-Well ... actually not just Arduino, but any piece of hardware/software that communicates over serial (COM) ports !
+And not just Arduino: any hardware/software that communicates over serial (COM) ports !
 
 WebSite URL: https://ardity.dwilches.com
 
