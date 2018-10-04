@@ -44,7 +44,7 @@ public abstract class AbstractSerialThread
 
     // Internal synchronized queues used to send and receive messages from the
     // serial device. They serve as the point of communication between the
-    // Unity thread and the Ardity thread.
+    // Unity thread and the SerialComm thread.
     private Queue inputQueue, outputQueue;
 
     // Indicates when this thread should stop executing. When SerialController
@@ -52,6 +52,9 @@ public abstract class AbstractSerialThread
     private bool stopRequested = false;
 
     private bool enqueueStatusMessages = false;
+
+    // When the queue is full, prefer dropping the message in the queue instead of the new message
+    private bool dropOldMessage;
 
 
     /**************************************************************************
@@ -66,13 +69,15 @@ public abstract class AbstractSerialThread
                                 int baudRate,
                                 int delayBeforeReconnecting,
                                 int maxUnreadMessages,
-                                bool enqueueStatusMessages)
+                                bool enqueueStatusMessages,
+                                bool dropOldMessage)
     {
         this.portName = portName;
         this.baudRate = baudRate;
         this.delayBeforeReconnecting = delayBeforeReconnecting;
         this.maxUnreadMessages = maxUnreadMessages;
         this.enqueueStatusMessages = enqueueStatusMessages;
+        this.dropOldMessage = dropOldMessage;
 
         inputQueue = Queue.Synchronized(new Queue());
         outputQueue = Queue.Synchronized(new Queue());
@@ -115,7 +120,7 @@ public abstract class AbstractSerialThread
 
 
     /**************************************************************************
-     * Methods intended to be invoked from the Ardity thread (the one
+     * Methods intended to be invoked from the SerialComm thread (the one
      * created by the SerialController).
      *************************************************************************/
 
@@ -255,7 +260,17 @@ public abstract class AbstractSerialThread
                 }
                 else
                 {
-                    Debug.LogWarning("Queue is full. Dropping message: " + inputMessage);
+                    object droppedMessage;
+                    if (dropOldMessage)
+                    {
+                        droppedMessage = inputQueue.Dequeue();
+                        inputQueue.Enqueue(inputMessage);
+                    }
+                    else
+                    {
+                        droppedMessage = inputMessage;
+                    }
+                    Debug.LogWarning("Queue is full. Dropping message: " + droppedMessage);
                 }
             }
         }
