@@ -40,7 +40,7 @@ public class SerialController : MonoBehaviour
     public int reconnectionDelay = 1000;
 
     [Tooltip("Maximum number of unread data messages in the queue. " +
-             "New messages will be discarded.")]
+             "New or old (depending on \"Drop Old Message\" configuration) messages will be discarded.")]
     public int maxUnreadMessages = 1;
 
     [Tooltip("When the queue is full, prefer dropping the first message in the queue" +
