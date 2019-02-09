@@ -69,10 +69,10 @@ public class SerialController : MonoBehaviour
     void OnEnable()
     {
         serialThread = new SerialThreadLines(portName,
-            baudRate,
-            reconnectionDelay,
-            maxUnreadMessages,
-            dropOldMessage);
+                                             baudRate,
+                                             reconnectionDelay,
+                                             maxUnreadMessages,
+                                             dropOldMessage);
         thread = new Thread(new ThreadStart(serialThread.RunForever));
         thread.Start();
     }
