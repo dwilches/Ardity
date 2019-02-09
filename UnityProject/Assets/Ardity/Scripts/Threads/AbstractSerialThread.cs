@@ -44,7 +44,7 @@ public abstract class AbstractSerialThread
 
     // Internal synchronized queues used to send and receive messages from the
     // serial device. They serve as the point of communication between the
-    // Unity thread and the SerialComm thread.
+    // Unity thread and the Ardity thread.
     private Queue inputQueue, outputQueue;
 
     // Indicates when this thread should stop executing. When SerialController
@@ -120,7 +120,7 @@ public abstract class AbstractSerialThread
 
 
     /**************************************************************************
-     * Methods intended to be invoked from the SerialComm thread (the one
+     * Methods intended to be invoked from the Ardity thread (the one
      * created by the SerialController).
      *************************************************************************/
 
