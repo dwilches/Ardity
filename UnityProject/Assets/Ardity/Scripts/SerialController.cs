@@ -40,8 +40,13 @@ public class SerialController : MonoBehaviour
     public int reconnectionDelay = 1000;
 
     [Tooltip("Maximum number of unread data messages in the queue. " +
-             "New messages will be discarded.")]
+             "New or old (depending on \"Drop Old Message\" configuration) messages will be discarded.")]
     public int maxUnreadMessages = 1;
+
+    [Tooltip("When the queue is full, prefer dropping the oldest message in the queue" +
+             "instead of the new incoming message. Use this if you only need the" +
+             "latest message from the port.")]
+    public bool dropOldMessage;
 
     // Constants used to mark the start and end of a connection. There is no
     // way you can generate clashing messages from your serial device, as I
@@ -63,10 +68,11 @@ public class SerialController : MonoBehaviour
     // ------------------------------------------------------------------------
     void OnEnable()
     {
-        serialThread = new SerialThreadLines(portName, 
-                                             baudRate, 
+        serialThread = new SerialThreadLines(portName,
+                                             baudRate,
                                              reconnectionDelay,
-                                             maxUnreadMessages);
+                                             maxUnreadMessages,
+                                             dropOldMessage);
         thread = new Thread(new ThreadStart(serialThread.RunForever));
         thread.Start();
     }
@@ -113,7 +119,7 @@ public class SerialController : MonoBehaviour
             return;
 
         // Read the next message from the queue
-        string message = (string)serialThread.ReadMessage();
+        string message = (string) serialThread.ReadMessage();
         if (message == null)
             return;
 
@@ -133,7 +139,7 @@ public class SerialController : MonoBehaviour
     public string ReadSerialMessage()
     {
         // Read the next message from the queue
-        return (string)serialThread.ReadMessage();
+        return (string) serialThread.ReadMessage();
     }
 
     // ------------------------------------------------------------------------
@@ -150,10 +156,11 @@ public class SerialController : MonoBehaviour
     // the user can send some tear-down message to the hardware reliably.
     // ------------------------------------------------------------------------
     public delegate void TearDownFunction();
+
     private TearDownFunction userDefinedTearDownFunction;
+
     public void SetTearDownFunction(TearDownFunction userFunction)
     {
         this.userDefinedTearDownFunction = userFunction;
     }
-
 }

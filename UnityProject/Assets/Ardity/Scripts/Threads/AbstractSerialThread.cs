@@ -53,6 +53,9 @@ public abstract class AbstractSerialThread
 
     private bool enqueueStatusMessages = false;
 
+    // When the queue is full, prefer dropping the message in the queue instead of the new message
+    private bool dropOldMessage;
+
 
     /**************************************************************************
      * Methods intended to be invoked from the Unity thread.
@@ -66,13 +69,15 @@ public abstract class AbstractSerialThread
                                 int baudRate,
                                 int delayBeforeReconnecting,
                                 int maxUnreadMessages,
-                                bool enqueueStatusMessages)
+                                bool enqueueStatusMessages,
+                                bool dropOldMessage)
     {
         this.portName = portName;
         this.baudRate = baudRate;
         this.delayBeforeReconnecting = delayBeforeReconnecting;
         this.maxUnreadMessages = maxUnreadMessages;
         this.enqueueStatusMessages = enqueueStatusMessages;
+        this.dropOldMessage = dropOldMessage;
 
         inputQueue = Queue.Synchronized(new Queue());
         outputQueue = Queue.Synchronized(new Queue());
@@ -255,7 +260,17 @@ public abstract class AbstractSerialThread
                 }
                 else
                 {
-                    Debug.LogWarning("Queue is full. Dropping message: " + inputMessage);
+                    object droppedMessage;
+                    if (dropOldMessage)
+                    {
+                        droppedMessage = inputQueue.Dequeue();
+                        inputQueue.Enqueue(inputMessage);
+                    }
+                    else
+                    {
+                        droppedMessage = inputMessage;
+                    }
+                    Debug.LogWarning("Queue is full. Dropping message: " + droppedMessage);
                 }
             }
         }

@@ -25,8 +25,9 @@ public class SerialThread : SerialThreadLines
     public SerialThread(string portName,
                         int baudRate,
                         int delayBeforeReconnecting,
-                        int maxUnreadMessages)
-        : base(portName, baudRate, delayBeforeReconnecting, maxUnreadMessages)
+                        int maxUnreadMessages,
+                        bool dropOldMessage)
+        : base(portName, baudRate, delayBeforeReconnecting, maxUnreadMessages, dropOldMessage)
     {
     }
 }

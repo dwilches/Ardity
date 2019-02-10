@@ -24,8 +24,9 @@ public class SerialThreadLines : AbstractSerialThread
     public SerialThreadLines(string portName,
                              int baudRate,
                              int delayBeforeReconnecting,
-                             int maxUnreadMessages)
-        : base(portName, baudRate, delayBeforeReconnecting, maxUnreadMessages, true)
+                             int maxUnreadMessages,
+                             bool dropOldMessage)
+        : base(portName, baudRate, delayBeforeReconnecting, maxUnreadMessages, true, dropOldMessage)
     {
     }
 

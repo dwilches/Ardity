@@ -31,8 +31,9 @@ public class SerialThreadBinaryDelimited : AbstractSerialThread
                                        int baudRate,
                                        int delayBeforeReconnecting,
                                        int maxUnreadMessages,
-                                       byte separator)
-        : base(portName, baudRate, delayBeforeReconnecting, maxUnreadMessages, false)
+                                       byte separator,
+                                       bool dropOldMessage)
+        : base(portName, baudRate, delayBeforeReconnecting, maxUnreadMessages, false, dropOldMessage)
     {
         this.separator = separator;
     }

@@ -32,8 +32,13 @@ public class SerialControllerCustomDelimiter : MonoBehaviour
     public int reconnectionDelay = 1000;
 
     [Tooltip("Maximum number of unread data messages in the queue. " +
-             "New messages will be discarded.")]
+             "New or old (depending on \"Drop Old Message\" configuration) messages will be discarded.")]
     public int maxUnreadMessages = 1;
+
+    [Tooltip("When the queue is full, prefer dropping the oldest message in the queue" +
+             "instead of the new incoming message. Use this if you only need the" +
+             "latest message from the port.")]
+    public bool dropOldMessage;
 
     [Tooltip("Maximum number of unread data messages in the queue. " +
              "New messages will be discarded.")]
@@ -55,7 +60,8 @@ public class SerialControllerCustomDelimiter : MonoBehaviour
                                                        baudRate,
                                                        reconnectionDelay,
                                                        maxUnreadMessages,
-                                                       separator);
+                                                       separator,
+                                                       dropOldMessage);
         thread = new Thread(new ThreadStart(serialThread.RunForever));
         thread.Start();
     }
