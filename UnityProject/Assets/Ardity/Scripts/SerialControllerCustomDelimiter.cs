@@ -35,9 +35,9 @@ public class SerialControllerCustomDelimiter : MonoBehaviour
              "New or old (depending on \"Drop Old Message\" configuration) messages will be discarded.")]
     public int maxUnreadMessages = 1;
 
-    [Tooltip("When the queue is full, prefer dropping the oldest message in the queue" +
-             "instead of the new incoming message. Use this if you only need the" +
-             "latest message from the port.")]
+    [Tooltip("When the queue is full, prefer dropping the oldest message in the queue " +
+             "instead of the new incoming message. Use this if you prefer to keep the " +
+             "newest messages from the port.")]
     public bool dropOldMessage;
 
     [Tooltip("Maximum number of unread data messages in the queue. " +
