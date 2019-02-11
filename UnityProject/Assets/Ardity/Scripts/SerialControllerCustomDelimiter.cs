@@ -40,8 +40,8 @@ public class SerialControllerCustomDelimiter : MonoBehaviour
              "newest messages from the port.")]
     public bool dropOldMessage;
 
-    [Tooltip("Maximum number of unread data messages in the queue. " +
-             "New messages will be discarded.")]
+    [Tooltip("ASCII value of the character to use as separator. It marks the end of a " +
+             "message and the beginning of the next.")]
     public byte separator = 90;
 
     // Internal reference to the Thread and the object that runs in it.
