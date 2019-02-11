@@ -165,7 +165,7 @@ Common Issues
 
 If you get that error, check the current "API Compatibility Level" of your Unity project. Go to `Edit -> Project Settings -> Player`, and under `Other Settings` find an option that reads "Api Compatibility Level" and change it to `.NET 4.0` (or `.NET 2.0` if you have a version older than Unity 2018).
 
-Also, some users have reported needing to manually add `System.IO.dll` to the project. If the above solution doesn't work for you, go to `Project -> Add reference -> Browse` and then select the file `System.IO.dll` from inside your .NET framework's folder. This file may be located at `C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework.NETFramework\v4.5\Facades\System.IO.dll`.
+Also, some users have reported needing to manually add `System.IO.dll` to the project. If the above solution doesn't work for you, in Visual Studio go to `Project -> Add Reference -> Browse` and then select the file `System.IO.dll` from inside your .NET framework's folder. This file may be located at `C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework.NETFramework\v4.5\Facades\System.IO.dll`.
 
     
 License
