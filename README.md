@@ -157,6 +157,13 @@ To open a COM port from `Ardity` you need to use one of these naming conventions
 * `COM1`, `COM2`, ... for COM1 through COM9
 * `\\.\COM10`, `\\.\COM11`, ... for COM10 and up
 
+Can Ardity be used with Bluetooth devices?
+==
+
+Yes, it's possible.
+You need to configure your device to be seen in your operating system as a COM port.
+Instructions to do so vary from device to device and from OS to OS.
+Once you have it configured, use that COM port with Ardity, which will treat it as just another serial device.
 
 Common Issues
 ============================================
