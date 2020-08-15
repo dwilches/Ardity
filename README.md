@@ -151,6 +151,16 @@ void loop()
 }
 ```
 
+Documentation
+==
+
+Ardity is quite simple to use. You can find the setup guide in PDF format [here](https://github.com/dwilches/Ardity/raw/master/UnityProject/Ardity%20-%20Setup%20Guide.pdf).
+
+There is also a series of in-depth tutorials by the [Interface Lab](https://medium.com/interface-lab) from the University [NYU Shanghai](https://shanghai.nyu.edu/), please take a look here:
+- [Connecting to Unity](https://medium.com/interface-lab/arduino-tutorial-series-connecting-to-unity-eedc48e77087)
+- [Working with many sensors](https://medium.com/interface-lab/working-with-many-sensors-9029556ad3c0)
+- [Bidirectional communication](https://medium.com/interface-lab/bidirectional-communication-a1c11ff62a25)
+
 COM port names
 ==
 To open a COM port from `Ardity` you need to use one of these naming conventions:
