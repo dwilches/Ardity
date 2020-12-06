@@ -189,7 +189,7 @@ Also, some users have reported needing to manually add `System.IO.dll` to the pr
 
 # Communication with some devices doesn't work out of the box
 
-Some users have reported needing to enable RtsEnable and DtsEnable in order to get Ardity to work with their devices. So if communication is not working for you, try enabling these options in [ AbstractSerialThread | https://github.com/dwilches/Ardity/blob/master/UnityProject/Assets/Ardity/Scripts/Threads/AbstractSerialThread.cs#L198 ] just before the `serialPort.Open()` invocation:
+Some users have reported needing to enable RtsEnable and DtsEnable in order to get Ardity to work with their devices. So if communication is not working for you, try enabling these options in [AbstractSerialThread](https://github.com/dwilches/Ardity/blob/master/UnityProject/Assets/Ardity/Scripts/Threads/AbstractSerialThread.cs#L198) just before the `serialPort.Open()` invocation:
 
 ```
 serialPort.DtrEnable = true;
