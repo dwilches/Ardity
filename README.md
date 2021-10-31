@@ -178,7 +178,7 @@ Once you have it configured, use that COM port with Ardity, which will treat it 
 Common Issues
 ============================================
 
-#  The type or namespace name 'Ports' does not exist in the namespace 'System.IO'
+###  The type or namespace name 'Ports' does not exist in the namespace 'System.IO'
 
 If you get this error:
 > Assets/Ardity/Scripts/SerialThread.cs(9,17): error CS0234: The type or namespace name 'Ports' does not exist in the namespace 'System.IO'. Are you missing an assembly reference?
@@ -187,7 +187,7 @@ Check the current "API Compatibility Level" of your Unity project. Go to `Edit -
 
 Also, some users have reported needing to manually add `System.IO.dll` to the project. If the above solution doesn't work for you, in Visual Studio go to `Project -> Add Reference -> Browse` and then select the file `System.IO.dll` from inside your .NET framework's folder. This file may be located at `C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework.NETFramework\v4.5\Facades\System.IO.dll`.
 
-# Communication with some devices doesn't work out of the box
+### Communication with some devices doesn't work out of the box
 
 Some users have reported needing to enable RtsEnable and DtsEnable in order to get Ardity to work with their devices. So if communication is not working for you, try enabling these options in [AbstractSerialThread](https://github.com/dwilches/Ardity/blob/master/UnityProject/Assets/Ardity/Scripts/Threads/AbstractSerialThread.cs#L198) just before the `serialPort.Open()` invocation:
 
@@ -196,7 +196,7 @@ serialPort.DtrEnable = true;
 serialPort.RtsEnable = true;
 ```
 
-# Ardity works in the Editor but not outside of it
+### If Ardity works in the Editor but not outside of it
 
 Try changing the scripting backend from Mono to [IL2CPP](https://docs.unity3d.com/Manual/IL2CPP.html).
     
