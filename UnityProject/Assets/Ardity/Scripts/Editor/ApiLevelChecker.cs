@@ -21,12 +21,12 @@ public class ApiLevelChecker
         if (currentApi == targetApi) return;
 
         string title = "API Compatibility Level not supported";
-        string massage = $"Current API Compatibility Level ({currentApi}) is not supported for Ardity.\n" +
+        string message = $"Current API Compatibility Level ({currentApi}) is not supported for Ardity.\n" +
             $"Use .Net 4.x (or .Net 2.0 for Unity 2018 or earlier).\n" +
             $"Would you like to change it to {targetApi}?";
         string noButton = "I will change it later";
 
-        if (EditorUtility.DisplayDialog(title, massage, "Yes", noButton))
+        if (EditorUtility.DisplayDialog(title, message, "Yes", noButton))
         {
             PlayerSettings.SetApiCompatibilityLevel(UnityEditor.Build.NamedBuildTarget.Standalone, targetApi);
             Debug.Log("API Compatibility Level changed to " + targetApi);
