@@ -109,6 +109,18 @@ public abstract class AbstractSerialThread
     }
 
     // ------------------------------------------------------------------------
+    // Returns number of messages in the input queue.
+    // It returns 0 if queue is not initialized.
+    // ------------------------------------------------------------------------
+    public int InputQueueCount()
+    {
+        if (inputQueue == null)
+            return 0;
+
+        return inputQueue.Count;
+    }
+
+    // ------------------------------------------------------------------------
     // Schedules a message to be sent. It writes the message to the
     // output queue, later the method 'RunOnce' reads this queue and sends
     // the message to the serial device.
