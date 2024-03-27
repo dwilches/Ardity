@@ -48,7 +48,8 @@ public class SerialController : MonoBehaviour
              "newest messages from the port.")]
     public bool dropOldMessage;
 
-    [Tooltip("Read all unread messages in the queue during every Update loop.")]
+    [Tooltip("Read all unread messages in the queue during every Update loop. " +
+             "Only used when \"Message Listener\" is provided.")]
     public bool readAllMessages;
 
     // Constants used to mark the start and end of a connection. There is no
