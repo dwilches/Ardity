@@ -48,6 +48,10 @@ public class SerialController : MonoBehaviour
              "newest messages from the port.")]
     public bool dropOldMessage;
 
+    [Tooltip("Read all unread messages in the queue during every Update loop. " +
+             "Only used when \"Message Listener\" is provided.")]
+    public bool readAllMessages;
+
     // Constants used to mark the start and end of a connection. There is no
     // way you can generate clashing messages from your serial device, as I
     // compare the references of these strings, no their contents. So if you
@@ -106,10 +110,8 @@ public class SerialController : MonoBehaviour
     }
 
     // ------------------------------------------------------------------------
-    // Polls messages from the queue that the SerialThread object keeps. Once a
-    // message has been polled it is removed from the queue. There are some
-    // special messages that mark the start/end of the communication with the
-    // device.
+    // Calls message polling every frame. Does nothing when message listener
+    // is not provided.
     // ------------------------------------------------------------------------
     void Update()
     {
@@ -118,6 +120,23 @@ public class SerialController : MonoBehaviour
         if (messageListener == null)
             return;
 
+        // If the user prefers to read all messages, then enter a loop
+        // and read messages until the queue is empty
+        if (readAllMessages)
+            while (serialThread.InputQueueCount() > 0)
+                ReadSerialMessageToMessageListener();
+        else
+            ReadSerialMessageToMessageListener();
+    }
+
+    // ------------------------------------------------------------------------
+    // Polls messages from the queue that the SerialThread object keeps. Once a
+    // message has been polled it is removed from the queue. There are some
+    // special messages that mark the start/end of the communication with the
+    // device.
+    // ------------------------------------------------------------------------
+    private void ReadSerialMessageToMessageListener()
+    {
         // Read the next message from the queue
         string message = (string) serialThread.ReadMessage();
         if (message == null)
