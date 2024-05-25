@@ -56,6 +56,9 @@ public abstract class AbstractSerialThread
     // When the queue is full, prefer dropping the message in the queue instead of the new message
     private bool dropOldMessage;
 
+    private bool dtrEnable = false;
+    private bool rtsEnable = false;
+
 
     /**************************************************************************
      * Methods intended to be invoked from the Unity thread.
@@ -70,7 +73,9 @@ public abstract class AbstractSerialThread
                                 int delayBeforeReconnecting,
                                 int maxUnreadMessages,
                                 bool enqueueStatusMessages,
-                                bool dropOldMessage)
+                                bool dropOldMessage,
+                                bool dtrEnable,
+                                bool rtsEnable)
     {
         this.portName = portName;
         this.baudRate = baudRate;
@@ -78,6 +83,8 @@ public abstract class AbstractSerialThread
         this.maxUnreadMessages = maxUnreadMessages;
         this.enqueueStatusMessages = enqueueStatusMessages;
         this.dropOldMessage = dropOldMessage;
+        this.dtrEnable = dtrEnable;
+        this.rtsEnable = rtsEnable;
 
         inputQueue = Queue.Synchronized(new Queue());
         outputQueue = Queue.Synchronized(new Queue());
@@ -205,8 +212,8 @@ public abstract class AbstractSerialThread
         serialPort = new SerialPort(portName, baudRate);
         serialPort.ReadTimeout = readTimeout;
         serialPort.WriteTimeout = writeTimeout;
-        // serialPort.DtrEnable = true;
-        // serialPort.RtsEnable = true;
+        serialPort.DtrEnable = dtrEnable;
+        serialPort.RtsEnable = rtsEnable;
         serialPort.Open();
 
         if (enqueueStatusMessages)

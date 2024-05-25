@@ -26,8 +26,10 @@ public class SerialThread : SerialThreadLines
                         int baudRate,
                         int delayBeforeReconnecting,
                         int maxUnreadMessages,
-                        bool dropOldMessage)
-        : base(portName, baudRate, delayBeforeReconnecting, maxUnreadMessages, dropOldMessage)
+                        bool dropOldMessage,
+                        bool dtrEnable,
+                        bool rtsEnable)
+        : base(portName, baudRate, delayBeforeReconnecting, maxUnreadMessages, dropOldMessage, dtrEnable, rtsEnable)
     {
     }
 }

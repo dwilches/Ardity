@@ -44,6 +44,9 @@ public class SerialControllerCustomDelimiter : MonoBehaviour
              "message and the beginning of the next.")]
     public byte separator = 90;
 
+    public bool dtrEnable;
+    public bool rtsEnable;
+
     // Internal reference to the Thread and the object that runs in it.
     protected Thread thread;
     protected SerialThreadBinaryDelimited serialThread;
@@ -61,7 +64,9 @@ public class SerialControllerCustomDelimiter : MonoBehaviour
                                                        reconnectionDelay,
                                                        maxUnreadMessages,
                                                        separator,
-                                                       dropOldMessage);
+                                                       dropOldMessage,
+                                                       dtrEnable,
+                                                       rtsEnable);
         thread = new Thread(new ThreadStart(serialThread.RunForever));
         thread.Start();
     }

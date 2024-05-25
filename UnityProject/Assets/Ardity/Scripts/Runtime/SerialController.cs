@@ -52,6 +52,9 @@ public class SerialController : MonoBehaviour
              "Only used when \"Message Listener\" is provided.")]
     public bool readAllMessages;
 
+    public bool dtrEnable;
+    public bool rtsEnable;
+
     // Constants used to mark the start and end of a connection. There is no
     // way you can generate clashing messages from your serial device, as I
     // compare the references of these strings, no their contents. So if you
@@ -76,7 +79,9 @@ public class SerialController : MonoBehaviour
                                              baudRate,
                                              reconnectionDelay,
                                              maxUnreadMessages,
-                                             dropOldMessage);
+                                             dropOldMessage,
+                                             dtrEnable,
+                                             rtsEnable);
         thread = new Thread(new ThreadStart(serialThread.RunForever));
         thread.Start();
     }
