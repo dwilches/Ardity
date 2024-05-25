@@ -21,6 +21,22 @@ If you need a program to test your Unity scene I have created the following Ardu
 It also recognizes two input messages and reacts to them, this is for bidirectional communication for the scene "DemoSceneUserPoll_ReadWrite".
 So if you want to use that scene just run it and press the keys 'A' or 'Z' to see what you Arduino has to say about it.
 
+Installation
+============
+
+You can download the code from GitHub (Code > Download ZIP) and after uncompressing, import the assets into your Unity scene.
+
+
+Alternative installation using Package Manager
+============
+
+1. Open the Unity Package Manager by navigating to **Packages > Package Manager**.
+2. Click on **Packages** in the top left corner and select **Add package from git URL...**.
+3. Paste the following URL into the input field and click **Install**:
+
+```
+https://github.com/dwilches/Ardity.git?path=UnityProject/Assets/Ardity
+```
 
 Sample Arduino Program
 ======================
