@@ -1,0 +1,27 @@
+fileFormatVersion: 2
+guid: 3927c04c7d89ac54dba2bd9a02430246
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 305d72b64a2242c0b6ff1d70a6bc89f4, type: 3}
+  name: 
+  version: 
+  displayName: 
+  description: 
+  unity: 
+  unityRelease: 
+  dependencies:
+    keyValuePairs: []
+  keywords: []
+  author:
+    name: 
+    email: 
+    url: 
+  autoExportJson: 1
+  overrideExportJsonPath: 0
+  exportJsonPath: 
+  registryUrl: https://registry.my-company.com
