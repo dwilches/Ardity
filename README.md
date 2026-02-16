@@ -212,10 +212,7 @@ serialPort.DtrEnable = true;
 serialPort.RtsEnable = true;
 ```
 
-### If Ardity works in the Editor but not outside of it
 
-Try changing the scripting backend from Mono to [IL2CPP](https://docs.unity3d.com/Manual/IL2CPP.html).
-    
 License
 =======
 
